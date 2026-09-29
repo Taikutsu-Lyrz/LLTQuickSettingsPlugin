@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows10.0.26100</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LenovoLegionToolkit.Plugin.QuickSettings</RootNamespace>
+    <AssemblyName>QuickSettings</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <Nullable>enable</Nullable>
+    <NoWarn>CA1416;CA2255</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(LLT_SOURCE)\LenovoLegionToolkit.Lib\LenovoLegionToolkit.Lib.csproj" AdditionalProperties="DirectoryBuildPropsPath=$(MSBuildProjectDirectory)\..\BuildIsolation.props">
+      <Private>false</Private><ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <PackageReference Include="WPF-UI" Version="2.1.0">
+      <Private>false</Private><ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Target Name="NoHostRuntimeCopies" BeforeTargets="_CopyFilesMarkedCopyLocal">
+    <ItemGroup><ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" /></ItemGroup>
+  </Target>
+  <Target Name="PatchAssemblyVersion" AfterTargets="AfterBuild">
+    <!-- LLT already owns the native diagnostic binaries copied transitively by Lib. -->
+    <ItemGroup><HostRuntimeCopies Include="$(TargetDir)**\*.dll" Exclude="$(TargetPath)" /></ItemGroup>
+    <Delete Files="@(HostRuntimeCopies)" />
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\..\AssemblyVersionPatcher\AssemblyVersionPatcher.csproj&quot; -c $(Configuration) -- &quot;$(TargetPath)&quot; LenovoLegionToolkit.Lib" />
+  </Target>
+  <ItemGroup><EmbeddedResource Include="Assets\mini-layout.svg" LogicalName="QuickSettings.MiniLayout.svg" /></ItemGroup>
+</Project>

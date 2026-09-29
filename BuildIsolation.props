@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="$(LLT_SOURCE)\Directory.Build.props" Condition="'$(MSBuildProjectName)' == 'LenovoLegionToolkit.Lib'" />
+  <PropertyGroup>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)artifacts\bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)artifacts\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <NuGetAudit>false</NuGetAudit>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**\bin\**;**\obj\**;**\BuildLLT\**;**\artifacts\**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

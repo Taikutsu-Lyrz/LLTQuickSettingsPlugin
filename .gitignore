@@ -1,0 +1,56 @@
+# .NET and generated packages
+**/bin/
+**/obj/
+/artifacts/
+/out/
+*.nupkg
+*.snupkg
+
+# IDE / per-user settings
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Machine-specific verification output
+/verification/protected-files.xml
+/verification/report.json
+
+# Test and coverage output
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Local secrets and overrides
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+build.local.ps1
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Compiled binaries and release archives (publish via GitHub Releases)
+*.dll
+*.exe
+*.pdb
+*.zip
+*.7z
+
+# CI dependency checkout
+/core-app/

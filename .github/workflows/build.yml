@@ -1,0 +1,103 @@
+name: Build Quick Settings
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quick-settings-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      LLT_SOURCE: ${{ github.workspace }}\core-app
+      DirectoryBuildPropsPath: ${{ github.workspace }}\BuildIsolation.props
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check out official LLT source
+        uses: actions/checkout@v7
+        with:
+          repository: LenovoLegionToolkit-Team/LenovoLegionToolkit
+          ref: ${{ vars.LLT_REF || 'v2.34.0.0' }}
+          path: core-app
+          persist-credentials: false
+          sparse-checkout: |
+            LenovoLegionToolkit.Lib
+            Directory.Build.props
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 9.0.318
+
+      - name: Build plugin
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $upstream = git -C $env:LLT_SOURCE rev-parse HEAD
+          "Official LLT source: $upstream" >> $env:GITHUB_STEP_SUMMARY
+          dotnet build .\QuickSettings\QuickSettings.csproj -c Release
+          if ($LASTEXITCODE -ne 0) { throw 'Plugin build failed.' }
+
+      - name: Package DLL only
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dlls = @(Get-ChildItem '.\artifacts\bin\QuickSettings\Release' -Recurse -File -Filter '*.dll')
+          if ($dlls.Count -ne 1 -or $dlls[0].Name -ne 'QuickSettings.dll') {
+            throw 'Expected only QuickSettings.dll; refusing to package host dependencies.'
+          }
+          New-Item -ItemType Directory -Path out -Force | Out-Null
+          Copy-Item -LiteralPath $dlls[0].FullName -Destination '.\out\QuickSettings.dll'
+          Compress-Archive -LiteralPath '.\out\QuickSettings.dll' -DestinationPath '.\out\QuickSettings.zip'
+          "Build $env:GITHUB_RUN_NUMBER from $env:GITHUB_SHA. Download the ZIP from this run's artifacts." >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: QuickSettings-build-${{ github.run_number }}-${{ github.run_attempt }}
+          path: out/QuickSettings.zip
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v8
+        with:
+          name: QuickSettings-build-${{ github.run_number }}-${{ github.run_attempt }}
+          path: release
+      - name: Publish tagged release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/QuickSettings.zip --clobber
+          else
+            gh release create "$RELEASE_TAG" release/QuickSettings.zip --verify-tag --title "Quick Settings $RELEASE_TAG" --generate-notes
+          fi

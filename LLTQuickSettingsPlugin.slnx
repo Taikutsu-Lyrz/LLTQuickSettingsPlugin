@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AssemblyVersionPatcher/AssemblyVersionPatcher.csproj" />
+  <Project Path="QuickSettings/QuickSettings.csproj" />
+</Solution>
