@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: LenovoLegionToolkit-Team/LenovoLegionToolkit
-          ref: ${{ vars.LLT_REF || 'v2.34.0.0' }}
+          ref: ${{ vars.LLT_REF || '6c86eb8afb76a124be9339e01fb7900df354765d' }}
           path: core-app
           persist-credentials: false
           sparse-checkout: |

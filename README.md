@@ -103,7 +103,7 @@ git push origin v1.0.1
 
 Tag releases keep `QuickSettings.zip` as a release asset. Normal pushes produce build artifacts rather than permanent releases. Build numbers identify CI packages; this workflow does not change the plugin's internal version automatically.
 
-CI checks out official LLT **v2.34.0.0** by default, separately from the plugin, so builds use the API version this plugin targets. Set the repository Actions variable **LLT_REF** to another compatible tag or full commit SHA to change that version. The resolved commit is recorded in each run's summary. No custom secrets are needed; only the tag release job receives permission to publish releases.
+CI checks out a pinned official LLT API source commit by default, separately from the plugin, so builds use the plugin APIs. Set the repository Actions variable **LLT_REF** to another compatible tag or full commit SHA to change that version. The resolved commit is recorded in each run's summary. No custom secrets are needed; only the tag release job receives permission to publish releases.
 
 Workflow action documentation: [checkout](https://github.com/actions/checkout), [setup-dotnet](https://github.com/actions/setup-dotnet), [upload-artifact](https://github.com/actions/upload-artifact).
 
