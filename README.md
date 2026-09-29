@@ -2,6 +2,18 @@
 
 A Quick Settings flyout plugin for the official Lenovo Legion Toolkit (LLT), loaded through its Station extension system.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><strong>Quick Settings on the desktop</strong><br><img src="docs/screenshots/quick-settings-on-desktop.png" alt="Quick Settings flyout open over the Windows desktop" width="760"></td>
+    <td align="center"><strong>Quick Settings flyout</strong><br><img src="docs/screenshots/quick-settings-flyout.png" alt="Quick Settings flyout with live information and adjustable controls" width="360"></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><strong>Mini Layout</strong><br>Configure the shortcut and reorder or hide items while previewing the flyout.<br><img src="docs/screenshots/mini-layout.png" alt="Mini Layout page with item list and live Quick Settings preview" width="1100"></td>
+  </tr>
+</table>
+
 ## Features
 
 - Global shortcut to toggle the flyout: **Ctrl+Shift+Q** by default, configurable in Mini Layout.
