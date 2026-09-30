@@ -1,4 +1,8 @@
-# Quick Settings for Lenovo Legion Toolkit
+<p align="center">
+  <img src="docs/assets/quick-settings-logo.svg" alt="Quick Settings panel logo" width="96" height="96">
+</p>
+
+<h1 align="center">Quick Settings for Lenovo Legion Toolkit</h1>
 
 A Quick Settings flyout plugin for the official Lenovo Legion Toolkit (LLT), loaded through its Station extension system.
 
@@ -78,6 +82,7 @@ Distribute only `QuickSettings.dll` in the ZIP. Do not bundle LLT or WPF-UI asse
 | --- | --- |
 | `QuickSettings/` | Plugin provider, flyout, Mini Layout and hardware controls |
 | `QuickSettings/Assets/mini-layout.svg` | Embedded panel navigation icon |
+| `docs/assets/quick-settings-logo.svg` | README logo based on the panel icon |
 | `AssemblyVersionPatcher/` | Version patcher copied from the official plugin template |
 | `BuildIsolation.props` | Keeps compilation outputs outside the LLT source checkout |
 | `build.ps1` | Local build, packaging and optional installation |
